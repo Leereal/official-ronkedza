@@ -19,6 +19,8 @@ import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
+import Image from "next/image";
+import { Logo } from "@/components/Logo";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -63,13 +65,7 @@ export default function LoginForm() {
   return (
     <Card className="md:w-[500px]">
       <div className="text-center p-6 bg-slate-900 rounded-t">
-        <Link href="/">
-          <img
-            src="/images/logo.png"
-            alt=""
-            className="w-14 h-14 mx-auto mb-2"
-          />
-        </Link>
+        <Logo />
       </div>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Login to your account</CardTitle>
@@ -127,8 +123,7 @@ export default function LoginForm() {
         </Button>
       </CardFooter>
       <p className="mb-5 text-sm font-medium text-center text-slate-500">
-        {" "}
-        Don't have an account?{" "}
+        No account yet?
         <Link
           href="/sign-up"
           className="font-medium text-blue-600 hover:underline"

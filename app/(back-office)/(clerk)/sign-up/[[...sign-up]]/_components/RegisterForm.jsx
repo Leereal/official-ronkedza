@@ -19,6 +19,8 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
+import Image from "next/image";
+import { Logo } from "@/components/Logo";
 
 export default function RegisterForm() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -101,13 +103,7 @@ export default function RegisterForm() {
       {!pendingVerification && (
         <>
           <div className="text-center p-6 bg-slate-900 rounded-t">
-            <Link href="/">
-              <img
-                src="/images/logo.png"
-                alt=""
-                className="w-14 h-14 mx-auto mb-2"
-              />
-            </Link>
+            <Logo />
           </div>
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl">Create an account</CardTitle>

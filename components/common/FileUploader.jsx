@@ -6,6 +6,7 @@ import { generateClientDropzoneAccept } from "uploadthing/client";
 
 import { Button } from "@/components/ui/button";
 import { convertFileToUrl } from "@/lib/utils";
+import Image from "next/image";
 
 export function FileUploader({ imageUrl, onFieldChange, setFiles }) {
   const onDrop = useCallback((acceptedFiles) => {
@@ -27,7 +28,7 @@ export function FileUploader({ imageUrl, onFieldChange, setFiles }) {
 
       {imageUrl ? (
         <div className="flex h-full w-full flex-1 justify-center ">
-          <img
+          <Image
             src={imageUrl}
             alt="image"
             width={250}
@@ -37,7 +38,7 @@ export function FileUploader({ imageUrl, onFieldChange, setFiles }) {
         </div>
       ) : (
         <div className="flex-center flex-col py-5 text-grey-500">
-          <img
+          <Image
             src="/icons/upload.svg"
             width={77}
             height={77}
