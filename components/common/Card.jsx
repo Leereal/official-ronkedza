@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { DeleteConfirmation } from "./DeleteConfirmation";
+// import { DeleteConfirmation } from "./DeleteConfirmation";
 
 const Card = ({ post, hasOrderLink }) => {
   const { sessionClaims } = auth();
@@ -31,7 +31,7 @@ const Card = ({ post, hasOrderLink }) => {
             />
           </Link>
 
-          <DeleteConfirmation postId={post._id} />
+          {/* <DeleteConfirmation postId={post._id} /> */}
         </div>
       )}
 
