@@ -12,7 +12,7 @@ export default function Home() {
             Ronkedza Social Connect is a powerful platform that enables seamless
             integration with various social media networks. With features for
             managing social accounts, scheduling and publishing posts, and team
-            collaboration, it's the ultimate tool for boosting your social media
+            collaboration, the ultimate tool for boosting your social media
             presence and engagement.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
