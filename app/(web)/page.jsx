@@ -26,7 +26,7 @@ export default function Home() {
               href="/sign-up"
               className="text-sm font-semibold leading-6 text-gray-900"
             >
-              Or create an account <span aria-hidden="true">&rarr;</span>
+              Or create an account
             </Link>
           </div>
         </div>
