@@ -1,4 +1,4 @@
-import Collection from "@/components/shared/Collection";
+import Collection from "@/components/common/Collection";
 import {
   getPostById,
   getRelatedPostsByCategory,
