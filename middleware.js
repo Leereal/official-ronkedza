@@ -2,7 +2,18 @@ import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 export default authMiddleware({
-  publicRoutes: ["/"],
+  publicRoutes: [
+    "/",
+    "/posts/:id",
+    "/api/webhook/clerk",
+    "/api/webhook/stripe",
+    "/api/uploadthing",
+  ],
+  ignoredRoutes: [
+    "/api/webhook/clerk",
+    "/api/webhook/stripe",
+    "/api/uploadthing",
+  ],
   afterAuth(auth, req) {
     if (auth.userId && auth.isPublicRoute) {
       let path = "dashboard";

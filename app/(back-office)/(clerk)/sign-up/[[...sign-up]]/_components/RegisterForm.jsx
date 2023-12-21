@@ -41,8 +41,8 @@ export default function RegisterForm() {
     if (
       password &&
       password === confirmPassword &&
-      first_name &&
-      last_name &&
+      firstName &&
+      lastName &&
       email
     ) {
       try {
@@ -91,11 +91,15 @@ export default function RegisterForm() {
   };
 
   const signUpWith = (strategy) => {
-    return signUp.authenticateWithRedirect({
-      strategy,
-      redirectUrl: "/",
-      redirectUrlComplete: "/dashboard",
-    });
+    try {
+      return signUp.authenticateWithRedirect({
+        strategy,
+        redirectUrl: "/",
+        redirectUrlComplete: "/dashboard",
+      });
+    } catch (err) {
+      console.error(JSON.stringify(err, null, 2));
+    }
   };
 
   return (
