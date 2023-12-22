@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export default authMiddleware({
   publicRoutes: [
     "/",
-    "/posts/:id",
+    // "/posts/:id",
     "/api/webhook/clerk",
     "/api/webhook/stripe",
     "/api/uploadthing",
