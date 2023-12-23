@@ -20,4 +20,5 @@ export const postDefaultValues = {
   scheduled_time: new Date(),
   is_published: false,
   is_scheduled: false,
+  categoryId: "",
 };

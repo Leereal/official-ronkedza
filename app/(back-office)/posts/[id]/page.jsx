@@ -63,7 +63,7 @@ const PostDetails = async ({ params: { id }, searchParams }) => {
           collectionType="All_Posts"
           limit={3}
           page={searchParams.page}
-          totalPages={relatedPost?.totalPages}
+          totalPages={relatedPosts?.totalPages}
         />
       </section>
     </>

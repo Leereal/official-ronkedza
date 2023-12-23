@@ -116,7 +116,7 @@ const PostForm = ({ userId, type }) => {
           />
           <FormField
             control={form.control}
-            name="categoryiId"
+            name="categoryId"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Category</FormLabel>
