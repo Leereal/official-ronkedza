@@ -3,9 +3,10 @@ import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-// import { DeleteConfirmation } from "./DeleteConfirmation";
+import { FaEdit } from "react-icons/fa";
+import { DeleteConfirmation } from "./DeleteConfirmation";
 
-const Card = ({ post, hasOrderLink }) => {
+const Card = ({ post }) => {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.userId;
 
@@ -23,15 +24,10 @@ const Card = ({ post, hasOrderLink }) => {
       {isPostCreator && (
         <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
           <Link href={`/posts/${post._id}/update`}>
-            <Image
-              src="/assets/icons/edit.svg"
-              alt="edit"
-              width={20}
-              height={20}
-            />
+            <FaEdit width={20} height={20} className="text-green-500" />
           </Link>
 
-          {/* <DeleteConfirmation postId={post._id} /> */}
+          <DeleteConfirmation postId={post._id} />
         </div>
       )}
 
@@ -56,18 +52,6 @@ const Card = ({ post, hasOrderLink }) => {
           <p className="p-medium-14 md:p-medium-16 text-grey-600">
             {post.creator.firstName} {post.creator.lastName}
           </p>
-
-          {hasOrderLink && (
-            <Link href={`/orders?postId=${post._id}`} className="flex gap-2">
-              <p className="text-primary-500">Order Details</p>
-              <Image
-                src="/assets/icons/arrow.svg"
-                alt="search"
-                width={10}
-                height={10}
-              />
-            </Link>
-          )}
         </div>
       </div>
     </div>

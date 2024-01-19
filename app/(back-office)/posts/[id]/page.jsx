@@ -4,6 +4,8 @@ import {
   getRelatedPostsByCategory,
 } from "@/lib/actions/post.actions";
 import Image from "next/image";
+import Link from "next/link";
+import { FaEdit } from "react-icons/fa";
 
 const PostDetails = async ({ params: { id }, searchParams }) => {
   const post = await getPostById(id);
@@ -33,7 +35,7 @@ const PostDetails = async ({ params: { id }, searchParams }) => {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <div className="flex gap-3">
                   <p className="p-bold-20 rounded-full bg-green-500/10 px-5 py-2 text-green-700">
-                    {post.is_published}
+                    {post.is_published ? "Published" : "Draft"}
                   </p>
                   <p className="p-medium-16 rounded-full bg-grey-500/10 px-4 py-2.5 text-grey-500">
                     {post.category.name}
@@ -46,8 +48,12 @@ const PostDetails = async ({ params: { id }, searchParams }) => {
                     {post.creator.firstName} {post.creator.lastName}
                   </span>
                 </p>
+                <Link href={`/posts/${post._id}/update`}>
+                  <FaEdit width={20} height={20} className="text-green-500" />
+                </Link>
               </div>
             </div>
+            <div>{post.content}</div>
           </div>
         </div>
       </section>

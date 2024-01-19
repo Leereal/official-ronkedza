@@ -8,6 +8,8 @@ export default authMiddleware({
     "/api/webhook/clerk",
     "/api/webhook/stripe",
     "/api/uploadthing",
+    "/privacy",
+    "/delete-data-instructions",
   ],
   ignoredRoutes: [
     "/api/webhook/clerk",

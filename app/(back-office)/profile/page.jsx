@@ -1,18 +1,18 @@
-import PostForm from "@/components/common/PostForm";
+import SettingsForm from "@/components/common/SettingsForm";
 import TopSection from "@/components/common/TopSection";
 import { auth } from "@clerk/nextjs";
 
-const CreatePost = () => {
+const Profile = () => {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.userId;
   return (
     <>
-      <TopSection title="Create Post" />
+      <TopSection title="Profile" />
       <div className="wrapper my-8">
-        <PostForm userId={userId} type="Create" />
+        <SettingsForm userId={userId} type="Create" />
       </div>
     </>
   );
 };
 
-export default CreatePost;
+export default Profile;

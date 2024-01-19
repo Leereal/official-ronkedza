@@ -25,10 +25,18 @@ import Dropdown from "@/components/common/Dropdown";
 import { createPost, updatePost } from "@/lib/actions/post.actions";
 import { useRouter } from "next/navigation";
 import { useUploadThing } from "@/lib/uploadthing";
+import { postToSocials } from "@/lib/actions/socialPost.actions";
 
-const PostForm = ({ userId, type }) => {
+const PostForm = ({ userId, type, post, postId }) => {
   const [files, setFiles] = useState([]);
-  const initialValues = postDefaultValues;
+  const initialValues =
+    post && type === "Update"
+      ? {
+          ...post,
+          scheduled_time: new Date(post.scheduled_time),
+          categoryId: post.category._id,
+        }
+      : postDefaultValues;
   const router = useRouter();
   const { startUpload } = useUploadThing("imageUploader");
 
@@ -59,6 +67,7 @@ const PostForm = ({ userId, type }) => {
         });
 
         if (newPost) {
+          postToSocials(newPost);
           form.reset();
           router.push(`/posts/${newPost._id}`);
         }
