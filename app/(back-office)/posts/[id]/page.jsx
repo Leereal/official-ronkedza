@@ -1,13 +1,21 @@
 import Collection from "@/components/common/Collection";
+import PostForm from "@/components/common/PostForm";
+import RepostModal from "@/components/common/RepostModal";
+import TopSection from "@/components/common/TopSection";
+import { Button } from "@/components/ui/button";
 import {
   getPostById,
   getRelatedPostsByCategory,
 } from "@/lib/actions/post.actions";
+import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { FaEdit } from "react-icons/fa";
+import { FaRetweet } from "react-icons/fa6";
 
 const PostDetails = async ({ params: { id }, searchParams }) => {
+  const { sessionClaims } = auth();
+  const userId = sessionClaims?.userId;
   const post = await getPostById(id);
 
   const relatedPosts = await getRelatedPostsByCategory({
@@ -18,6 +26,7 @@ const PostDetails = async ({ params: { id }, searchParams }) => {
 
   return (
     <>
+      <TopSection title={post.title} />
       <section className="flex justify-center bg-primary-50 bg-dotted-pattern bg-contain">
         <div className="grid grid-cols-1 md:grid-cols-2 2xl:max-w-7xl">
           <Image
@@ -53,7 +62,8 @@ const PostDetails = async ({ params: { id }, searchParams }) => {
                 </Link>
               </div>
             </div>
-            <div>{post.content}</div>
+            <div className="text-justify">{post.content}</div>
+            <RepostModal userId={userId} post={post} />
           </div>
         </div>
       </section>

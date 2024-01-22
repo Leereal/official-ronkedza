@@ -23,7 +23,7 @@ import {
   getAllCategories,
 } from "@/lib/actions/category.actions";
 
-const Dropdown = ({ value, onChangeHandler }) => {
+const Dropdown = ({ value, onChangeHandler, disabled }) => {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
 
@@ -45,7 +45,11 @@ const Dropdown = ({ value, onChangeHandler }) => {
   }, []);
 
   return (
-    <Select onValueChange={onChangeHandler} defaultValue={value}>
+    <Select
+      onValueChange={onChangeHandler}
+      defaultValue={value}
+      disabled={disabled}
+    >
       <SelectTrigger className="select-field">
         <SelectValue placeholder="Category" />
       </SelectTrigger>

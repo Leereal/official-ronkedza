@@ -4,66 +4,54 @@ import { useForm } from "react-hook-form";
 import { FaCalendarAlt } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { postFormSchema } from "@/lib/validator";
+import { postFormSchema, settingFormSchema } from "@/lib/validator";
 import { Button } from "@/components/ui/button";
-import { postDefaultValues } from "@/constants";
+import { postDefaultValues, settingDefaultValues } from "@/constants";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUploadThing } from "@/lib/uploadthing";
-import {
-  createFacebookAuth,
-  postToSocials,
-} from "@/lib/actions/socialPost.actions";
 import { useEffect } from "react";
+import {
+  autoFacebookAuth,
+  deleteFacebookAuth,
+} from "@/lib/actions/facebookToken.actions";
 
-const SettingsForm = ({ userId, type, post, postId }) => {
+const SettingsForm = ({ userId, type, setting, settingId, facebookAppId }) => {
   const [facebookStatus, setFacebookStatus] = useState("");
-  const facebookAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
-
-  const initialValues =
-    post && type === "Update"
-      ? {
-          ...post,
-          scheduled_time: new Date(post.scheduled_time),
-          categoryId: post.category._id,
-        }
-      : postDefaultValues;
-
-  const form = useForm({
-    resolver: zodResolver(postFormSchema),
-    defaultValues: initialValues,
-  });
-
-  async function onSubmit(values) {
-    if (type === "Create") {
-      try {
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    if (type === "Update") {
-      try {
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
+  console.log("facebookAppId : ", facebookAppId);
 
   const loginFacebook = () => {
-    FB.login(function (response) {
-      if (response.status === "connected") {
-        createFacebookAuth({ userId });
-        setFacebookStatus("connected");
-        //Logged In successfully
+    FB.login(
+      function (response) {
+        if (response.status === "connected") {
+          //We are getting the date as Unix timestamp so convert to actual date
+          const expiration = new Date(
+            response.authResponse.data_access_expiration_time * 1000
+          ).toISOString();
+
+          autoFacebookAuth(
+            {
+              userId,
+              accessToken: response.authResponse.accessToken,
+              expiration: expiration,
+              expiresIn: response.authResponse.expiresIn,
+              facebookUserId: response.authResponse.userID,
+            },
+            () => {
+              setFacebookStatus("connected");
+            }
+          );
+        } else if (response.status === "unknown") {
+          setFacebookStatus("unknown");
+        }
       }
-    });
+      // TODO { scope: "email,user_likes" } // Ask for email and user likes permissions. You can add more if you like. This doesn't on local we can test on live
+    );
   };
   const logoutFacebook = () => {
     FB.logout(function (response) {
-      console.log("Logout Response : ", response);
       deleteFacebookAuth({ userId });
-      setFacebookStatus("");
+      setFacebookStatus("unknown");
     });
   };
 
@@ -74,7 +62,10 @@ const SettingsForm = ({ userId, type, post, postId }) => {
           appId: facebookAppId,
           cookie: true,
           xfbml: true,
-          version: "v12.0",
+          version: "v18.0",
+        });
+        FB.getLoginStatus(function (response) {
+          setFacebookStatus(response.status);
         });
 
         FB.AppEvents.logPageView();
@@ -102,17 +93,6 @@ const SettingsForm = ({ userId, type, post, postId }) => {
       }
     };
   }, []);
-
-  useEffect(() => {
-    // Use FB.getLoginStatus when the Facebook SDK is loaded
-    if (typeof FB !== "undefined") {
-      FB.getLoginStatus(function (response) {
-        console.log("Response from Facebook : ", response);
-        setFacebookStatus(response.status);
-      });
-    }
-  }, [typeof FB]); // Run this effect only if type of FB
-
   return (
     <div>
       {facebookStatus && facebookStatus === "unknown" && (

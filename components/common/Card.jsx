@@ -5,6 +5,7 @@ import Link from "next/link";
 import React from "react";
 import { FaEdit } from "react-icons/fa";
 import { DeleteConfirmation } from "./DeleteConfirmation";
+import RepostModal from "./RepostModal";
 
 const Card = ({ post }) => {
   const { sessionClaims } = auth();
@@ -53,6 +54,7 @@ const Card = ({ post }) => {
             {post.creator.firstName} {post.creator.lastName}
           </p>
         </div>
+        <RepostModal userId={userId} post={post} />
       </div>
     </div>
   );

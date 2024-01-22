@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { convertFileToUrl } from "@/lib/utils";
 import Image from "next/image";
 
-export function FileUploader({ imageUrl, onFieldChange, setFiles }) {
+export function FileUploader({ imageUrl, onFieldChange, setFiles, disabled }) {
   const onDrop = useCallback((acceptedFiles) => {
     setFiles(acceptedFiles);
     onFieldChange(convertFileToUrl(acceptedFiles[0]));
@@ -24,7 +24,11 @@ export function FileUploader({ imageUrl, onFieldChange, setFiles }) {
       {...getRootProps()}
       className="flex-center bg-dark-3 flex h-72 cursor-pointer flex-col overflow-hidden rounded-xl bg-grey-50"
     >
-      <input {...getInputProps()} className="cursor-pointer" />
+      <input
+        {...getInputProps()}
+        className="cursor-pointer"
+        disabled={disabled}
+      />
 
       {imageUrl ? (
         <div className="flex h-full w-full flex-1 justify-center ">

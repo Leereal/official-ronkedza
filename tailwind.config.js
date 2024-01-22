@@ -20,9 +20,9 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          500: "#624CF5",
+          500: "#39B5FF",
           50: " #F6F8FD",
-          DEFAULT: "#624CF5",
+          DEFAULT: "#39B5FF",
           foreground: "hsl(var(--primary-foreground))",
         },
         coral: {
@@ -42,7 +42,7 @@ module.exports = {
         ring: "hsl(var(--ring))",
         foreground: "hsl(var(--foreground))",
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
+          DEFAULT: "#03C167",
           foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
@@ -54,7 +54,7 @@ module.exports = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
+          DEFAULT: "#FFB539",
           foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
