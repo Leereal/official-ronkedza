@@ -256,6 +256,7 @@ body {
 /* ========================================== REACT-DATEPICKER STYLES */
 .datePicker {
   width: 100%;
+  @apply text-[0.7rem];
 }
 
 .react-datepicker__input-container input {
@@ -273,4 +274,25 @@ body {
 
 .react-datepicker__time-list-item--selected {
   background-color: #624cf5 !important;
+}
+
+.table-report {
+  @apply w-full text-left border-spacing-y-[10px] border-separate sm:mt-2;
+}
+.table-report thead tr th {
+  @apply font-medium px-5 py-3 border-b-0 whitespace-nowrap text-gray-500;
+}
+.table-report tr {
+  @apply shadow-2xl rounded-lg border-spacing-y-[10px] border-separate box py-4;
+}
+.table-report tbody tr th {
+  @apply px-5 py-3 border-b w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r;
+}
+.box {
+  box-shadow: 0px 3px 20px #0000000b;
+  position: relative;
+  border-radius: 0.375rem;
+  border-color: transparent;
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }

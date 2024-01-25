@@ -10,6 +10,7 @@ import Image from "next/image";
 
 export function FileUploader({ imageUrl, onFieldChange, setFiles, disabled }) {
   const onDrop = useCallback((acceptedFiles) => {
+    console.log("Accepted Files : ", acceptedFiles);
     setFiles(acceptedFiles);
     onFieldChange(convertFileToUrl(acceptedFiles[0]));
   }, []);

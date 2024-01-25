@@ -1,10 +1,13 @@
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+});
 
 export const metadata = {
   title: {
@@ -19,7 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={inter.className}>
+        <body className={roboto.className}>
           {children}
           <Toaster />
         </body>

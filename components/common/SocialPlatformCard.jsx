@@ -3,10 +3,19 @@ import { FaTrash } from "react-icons/fa6";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { deleteSocialPlatform } from "@/lib/actions/socialPlatform.actions";
+import { toast } from "sonner";
 
 const SocialPlatformCard = ({ socialPlatform }) => {
-  const handleDelete = (id) => {
-    deleteSocialPlatform(id);
+  const handleDelete = async (id) => {
+    try {
+      await deleteSocialPlatform({
+        socialPlatformId: id,
+        path: "/admin-settings",
+      });
+      toast.success("Platform deleted successfully");
+    } catch (error) {
+      toast.error("Platform delete failed");
+    }
   };
   return (
     <div className="mb-3">

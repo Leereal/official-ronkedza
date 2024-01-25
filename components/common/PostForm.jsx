@@ -2,14 +2,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FaCalendarAlt } from "react-icons/fa";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { postFormSchema } from "@/lib/validator";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,20 +17,26 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { postDefaultValues } from "@/constants";
-import { FileUploader } from "./FileUploader";
 import { useState } from "react";
 import Dropdown from "@/components/common/Dropdown";
 import { createPost, updatePost, repostPost } from "@/lib/actions/post.actions";
 import { useRouter } from "next/navigation";
 import { useUploadThing } from "@/lib/uploadthing";
-import { postToSocials } from "@/lib/actions/socialPost.actions";
 import { MultiSelect } from "react-multi-select-component";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { MultipleFileUploader } from "./MultipleFileUploader";
+import SchedulePicker from "./SchedulePicker";
+import moment from "moment";
+import { FaTrash } from "react-icons/fa6";
+import { getAllSocialPlatforms } from "@/lib/actions/socialPlatform.actions";
 
 const PostForm = ({ userId, type, post, postId, closeModal }) => {
   const [files, setFiles] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [allPostSchedules, setAllPostSchedules] = useState([]);
+  const [socials, setSocials] = useState([]);
+
   const socials = [
     { label: "Facebook Page", value: "facebook-page" },
     { label: "Facebook Group", value: "facebook-group" },
@@ -68,7 +72,7 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
   });
 
   async function onSubmit(values) {
-    let uploadedImageUrl = values.imageUrl;
+    let uploadedImageUrls = values.attachments;
 
     if (files.length > 0) {
       const uploadedImages = await startUpload(files);
@@ -77,21 +81,20 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
         return;
       }
 
-      uploadedImageUrl = uploadedImages[0].url;
+      uploadedImageUrls = uploadedImages.map((image) => image.url);
     }
 
     if (type === "Create") {
       try {
         const newPost = await createPost({
-          post: { ...values, featured_image: uploadedImageUrl },
+          post: { ...values, attachments: uploadedImageUrls },
           userId,
           path: "/profile",
+          socialPlatforms: selected.length ? selected : null,
+          schedulingData: allPostSchedules.length ? allPostSchedules : null,
         });
 
         if (newPost) {
-          if (selected.length) {
-            postToSocials(newPost, selected);
-          }
           form.reset();
           router.push(`/posts/${newPost._id}`);
         }
@@ -111,6 +114,8 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
           userId,
           post: { ...values, featured_image: uploadedImageUrl, _id: postId },
           path: `/posts/${postId}`,
+          socialPlatforms: selected.length ? selected : null,
+          schedulingData: schedulingData.length ? schedulingData : null,
         });
 
         if (updatedPost) {
@@ -132,12 +137,11 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
           userId,
           post: { ...post, ...values },
           path: `/posts/${postId}`,
+          socialPlatforms: selected.length ? selected : null,
+          schedulingData: schedulingData.length ? schedulingData : null,
         });
 
         if (repostedPost) {
-          if (selected.length) {
-            postToSocials(repostedPost, selected);
-          }
           form.reset();
           router.push(`/posts/${repostedPost._id}`);
           closeModal();
@@ -147,6 +151,20 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
       }
     }
   }
+  const removeSchedule = (idx) => {
+    const newPostSchedules = allPostSchedules.filter(
+      (x, index) => index !== idx
+    );
+    setAllPostSchedules(newPostSchedules);
+  };
+  useEffect(() => {
+    const getSocialPlatforms = async () => {
+      const categoryList = await getAllSocialPlatforms();
+      categoryList && setCategories(categoryList);
+    };
+
+    getCategories();
+  }, []);
 
   return (
     <Form {...form}>
@@ -213,7 +231,7 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
             control={form.control}
             name="content"
             render={({ field }) => (
-              <FormItem className="w-full md:w-2/3">
+              <FormItem className="w-full">
                 <FormLabel>Content</FormLabel>
                 <FormControl className="h-72">
                   <Textarea
@@ -227,16 +245,40 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={form.control}
             name="featured_image"
             render={({ field }) => (
               <FormItem className="w-full md:w-1/3">
                 <FormLabel>Featured Image</FormLabel>
                 <FormControl className="h-72">
-                  <FileUploader
+                  <MultipleFileUploader
                     onFieldChange={field.onChange}
                     imageUrl={field.value}
+                    setFiles={setFiles}
+                    disabled={type === "Repost"}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+        </div>
+        <div className="flex flex-col gap-5 md:flex-row items-center">
+          <FormField
+            control={form.control}
+            name="attachments"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>
+                  Attachments (First image will be used as the cover)
+                </FormLabel>
+                {console.log("Filed: ", field)}
+                <FormControl>
+                  <MultipleFileUploader
+                    onFieldChange={field.onChange}
+                    imageUrls={field.value}
+                    files={files}
                     setFiles={setFiles}
                     disabled={type === "Repost"}
                   />
@@ -247,27 +289,40 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
           />
         </div>
         <div className="flex flex-col gap-5 md:flex-row items-center">
+          {allPostSchedules.map((schedule, index) => (
+            <p className="text-[0.65rem] text-green-900 flex gap-2">
+              <span className="capitalize font-bold">
+                {schedule.recurrence === "once" || schedule.recurrence === ""
+                  ? "once"
+                  : schedule.recurrence}
+              </span>
+              :{" "}
+              {moment(schedule.startDateTime).format("dddd, D MMMM YYYY h:mmA")}
+              {schedule.endDateTime
+                ? ` to ${moment(schedule.endDateTime).format(
+                    "dddd, D MMMM YYYY h:mmA"
+                  )}`
+                : ""}{" "}
+              <span>
+                <FaTrash
+                  className="text-red-500 cursor-pointer"
+                  onClick={() => removeSchedule(index)}
+                />
+              </span>
+            </p>
+          ))}
+        </div>
+        <div className="flex flex-col gap-5 md:flex-row items-center">
           <FormField
             control={form.control}
             name="scheduled_time"
             render={({ field }) => (
               <FormItem className="w-full lg:w-1/3">
                 <FormControl>
-                  <div className="flex-center h-[54px] w-full overflow-hidden rounded-full bg-grey-50 px-4 py-2">
-                    <FaCalendarAlt className="text-grey-500" />
-
-                    <p className="ml-3 whitespace-nowrap text-grey-600">
-                      Schedule Date:
-                    </p>
-                    <DatePicker
-                      selected={field.value}
-                      onChange={(date) => field.onChange(date)}
-                      showTimeSelect
-                      timeInputLabel="Time:"
-                      dateFormat="MM/dd/yyyy h:mm aa"
-                      wrapperClassName="datePicker"
-                    />
-                  </div>
+                  <SchedulePicker
+                    allPostSchedules={allPostSchedules}
+                    setAllPostSchedules={setAllPostSchedules}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

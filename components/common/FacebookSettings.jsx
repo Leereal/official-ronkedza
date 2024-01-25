@@ -7,7 +7,7 @@ import FacebookModal from "./FacebookModal";
 
 const FacebookSettings = async ({ userId }) => {
   const settings = await getFacebookSettingsByUser({ userId, page: 1 });
-  console.log("Settings :", settings);
+  const pages = settings.data;
   return (
     <Card>
       <CardHeader>
@@ -16,9 +16,13 @@ const FacebookSettings = async ({ userId }) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {settings.length &&
-          settings.map((item) => <FacebookPageCard page={item} />)}
-        <FacebookModal userId={userId} />
+        {!!pages.length &&
+          pages.map((item) => (
+            <FacebookPageCard page={item} userId={userId} key={item._id} />
+          ))}
+        <div className="border-2 border-dashed h-40 rounded-lg mx-4 flex justify-center items-center cursor-pointer">
+          <FacebookModal userId={userId} />
+        </div>
       </CardContent>
     </Card>
   );

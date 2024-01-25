@@ -2,10 +2,12 @@ import { getAllSocialPlatforms } from "@/lib/actions/socialPlatform.actions";
 import SocialPlatformCard from "./SocialPlatformCard";
 
 const AdminSettings = async () => {
-  const socialPlatforms = await getAllSocialPlatforms({ query: "", page: 1 });
+  let socialPlatforms = await getAllSocialPlatforms({ query: "", page: 1 });
+  socialPlatforms = socialPlatforms?.data;
+
   return (
     <div>
-      {!!socialPlatforms.length &&
+      {!!socialPlatforms?.length &&
         socialPlatforms.map((platform) => (
           <SocialPlatformCard socialPlatform={platform} key={platform.name} />
         ))}

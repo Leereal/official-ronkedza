@@ -4,16 +4,16 @@ export const headerLinks = [
     route: "/",
   },
   {
+    label: "Dashboard",
+    route: "/dashboard",
+  },
+  {
     label: "Create Post",
     route: "/posts/create",
   },
   {
     label: "My Profile",
     route: "/profile",
-  },
-  {
-    label: "Dashboard",
-    route: "/dashboard",
   },
   //TODO only show admin link if user is admin
   {
@@ -30,6 +30,7 @@ export const postDefaultValues = {
   is_published: false,
   is_scheduled: false,
   categoryId: "",
+  attachments: [],
 };
 
 export const pageDefaultValues = {

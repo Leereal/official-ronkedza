@@ -3,6 +3,7 @@ import SettingsForm from "@/components/common/SettingsForm";
 import TopSection from "@/components/common/TopSection";
 import { getPlatform } from "@/lib/actions/socialPlatform.actions";
 import { auth } from "@clerk/nextjs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Profile = async () => {
   const { sessionClaims } = auth();
@@ -13,9 +14,19 @@ const Profile = async () => {
     <>
       <TopSection title="Profile" />
       <div className="wrapper my-8">
-        {/* <SettingsForm facebookAppId={facebookApp?.appId} /> */}
-        {console.log("Profile :", facebookApp)}
-        <FacebookSettings userId={userId} />
+        <Tabs defaultValue="settings" className="">
+          <TabsList className="gap-8">
+            <TabsTrigger value="settings">Social Settings</TabsTrigger>
+            <TabsTrigger value="results">Posts Results</TabsTrigger>
+          </TabsList>
+          <TabsContent value="settings">
+            {/* <SettingsForm facebookAppId={facebookApp?.appId} /> */}
+            <FacebookSettings userId={userId} />
+          </TabsContent>
+          <TabsContent value="results">
+            <PostResults />
+          </TabsContent>
+        </Tabs>
       </div>
     </>
   );

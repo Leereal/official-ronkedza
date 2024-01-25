@@ -89,15 +89,13 @@ const FacebookModal = ({ page, type, userId }) => {
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="border-2 border-dashed h-40 rounded-lg mx-4 flex justify-center items-center cursor-pointer">
-          <FaPlus size={24} className="text-gray-400" />
-        </div>
+        <FaPlus size={24} className="text-gray-400" />
       </DialogTrigger>
       <DialogContent className="bg-white md:max-w-[60vw] dark:bg-slate-600">
         <DialogHeader>
           <DialogTitle>Facebook Token</DialogTitle>
           <DialogDescription>
-            Please click here on how to get tokens and page ID
+            Please click here on how to get user short lived token
             {/* TODO add a link to instructions here */}
           </DialogDescription>
         </DialogHeader>
@@ -107,7 +105,7 @@ const FacebookModal = ({ page, type, userId }) => {
             className="flex flex-col gap-5"
           >
             <div className="flex flex-col gap-5 md:flex-row">
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="pageId"
                 render={({ field }) => (
@@ -123,16 +121,16 @@ const FacebookModal = ({ page, type, userId }) => {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="accessToken"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Facebook Page AccessToken</FormLabel>
+                    <FormLabel>Facebook AccessToken</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Facebook Page AccessToken"
+                        placeholder="Facebook User AccessToken"
                         {...field}
                         className="input-field"
                       />
@@ -142,7 +140,7 @@ const FacebookModal = ({ page, type, userId }) => {
                 )}
               />
             </div>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Connect All Linked Pages</Button>
           </form>
         </Form>
       </DialogContent>
