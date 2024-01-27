@@ -45,7 +45,17 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
         }
       : postDefaultValues;
   const router = useRouter();
-  const { startUpload } = useUploadThing("imageUploader");
+  const { startUpload } = useUploadThing("imageUploader", {
+    onClientUploadComplete: () => {
+      console.log("uploaded successfully!");
+    },
+    onUploadError: (error) => {
+      console.log("error occurred while uploading: ", error);
+    },
+    onUploadBegin: () => {
+      console.log("upload has begun");
+    },
+  });
 
   const form = useForm({
     resolver: zodResolver(postFormSchema),
@@ -56,6 +66,7 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
     let uploadedImageUrls = values.attachments;
 
     if (files.length > 0) {
+      console.log("Files : ", files);
       const uploadedImages = await startUpload(files);
 
       if (!uploadedImages) {
