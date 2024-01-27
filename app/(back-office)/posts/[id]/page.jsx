@@ -17,29 +17,37 @@ const PostDetails = async ({ params: { id }, searchParams }) => {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.userId;
   const post = await getPostById(id);
-
+  if (!post) {
+    // Handle the case where the post is not found, e.g., redirect to an error page
+    // or display a message to the user.
+    return <div>Post not found</div>;
+  }
   const relatedPosts = await getRelatedPostsByCategory({
-    categoryId: post.category._id,
-    postId: post._id,
+    categoryId: post?.category._id,
+    postId: post?._id,
     page: searchParams.page,
   });
 
   return (
     <>
-      <TopSection title={post.title} />
+      <TopSection title={post?.title} />
       <section className="flex justify-center bg-primary-50 bg-dotted-pattern bg-contain">
         <div className="grid grid-cols-1 md:grid-cols-2 2xl:max-w-7xl">
           <Image
-            src={post.featured_image}
+            src={
+              post?.attachments && post?.attachments.length
+                ? post?.attachments[0]
+                : "/images/NOIMAGE.jpg"
+            }
             alt="hero image"
-            width={1000}
-            height={1000}
-            className="h-full min-h-[300px] object-cover object-center"
+            width={500}
+            height={500}
+            className="h-full min-h-[300px] object-cover object-center rounded-2xl"
           />
 
           <div className="flex w-full flex-col gap-8 p-5 md:p-10">
             <div className="flex flex-col gap-6">
-              <h2 className="h2-bold">{post.title}</h2>
+              <h2 className="h2-bold">{post?.title}</h2>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <div className="flex gap-3">
@@ -47,7 +55,7 @@ const PostDetails = async ({ params: { id }, searchParams }) => {
                     {post.is_published ? "Published" : "Draft"}
                   </p>
                   <p className="p-medium-16 rounded-full bg-grey-500/10 px-4 py-2.5 text-grey-500">
-                    {post.category.name}
+                    {post?.category.name}
                   </p>
                 </div>
 

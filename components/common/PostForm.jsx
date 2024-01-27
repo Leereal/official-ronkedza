@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { postDefaultValues } from "@/constants";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dropdown from "@/components/common/Dropdown";
 import { createPost, updatePost, repostPost } from "@/lib/actions/post.actions";
 import { useRouter } from "next/navigation";
@@ -29,37 +29,18 @@ import { MultipleFileUploader } from "./MultipleFileUploader";
 import SchedulePicker from "./SchedulePicker";
 import moment from "moment";
 import { FaTrash } from "react-icons/fa6";
-import { getAllSocialPlatforms } from "@/lib/actions/socialPlatform.actions";
+import { getSocialTokensByUser } from "@/lib/actions/socialToken.actions";
 
 const PostForm = ({ userId, type, post, postId, closeModal }) => {
   const [files, setFiles] = useState([]);
   const [selected, setSelected] = useState([]);
   const [allPostSchedules, setAllPostSchedules] = useState([]);
-  const [socials, setSocials] = useState([]);
-
-  const socials = [
-    { label: "Facebook Page", value: "facebook-page" },
-    { label: "Facebook Group", value: "facebook-group" },
-    // { label: "Facebook User", value: "facebook-user", disabled: true },
-    { label: "Facebook User", value: "facebook-user" },
-    { label: "Facebook Messenger", value: "facebook-messenger" },
-    { label: "Twitter", value: "twitter" },
-    { label: "Instagram", value: "instagram" },
-    { label: "Telegram", value: "telegram" },
-    { label: "Whatsapp", value: "whatsapp" },
-    { label: "Pinterest", value: "pinterest" },
-    { label: "Instagram", value: "instagram" },
-    { label: "Tiktok", value: "tiktok" },
-    { label: "Youtube", value: "youtube" },
-    { label: "Youtube Shorts", value: "youtube-shorts" },
-    { label: "Instagram", value: "instagram" },
-  ];
+  const [socialTokens, setSocialTokens] = useState([]);
 
   const initialValues =
     post && (type === "Update" || type === "Repost")
       ? {
           ...post,
-          scheduled_time: new Date(post.scheduled_time),
           categoryId: post.category._id,
         }
       : postDefaultValues;
@@ -93,7 +74,6 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
           socialPlatforms: selected.length ? selected : null,
           schedulingData: allPostSchedules.length ? allPostSchedules : null,
         });
-
         if (newPost) {
           form.reset();
           router.push(`/posts/${newPost._id}`);
@@ -112,10 +92,10 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
       try {
         const updatedPost = await updatePost({
           userId,
-          post: { ...values, featured_image: uploadedImageUrl, _id: postId },
+          post: { ...values, attachments: uploadedImageUrls, _id: postId },
           path: `/posts/${postId}`,
           socialPlatforms: selected.length ? selected : null,
-          schedulingData: schedulingData.length ? schedulingData : null,
+          schedulingData: allPostSchedules.length ? allPostSchedules : null,
         });
 
         if (updatedPost) {
@@ -138,7 +118,7 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
           post: { ...post, ...values },
           path: `/posts/${postId}`,
           socialPlatforms: selected.length ? selected : null,
-          schedulingData: schedulingData.length ? schedulingData : null,
+          schedulingData: allPostSchedules.length ? allPostSchedules : null,
         });
 
         if (repostedPost) {
@@ -157,13 +137,35 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
     );
     setAllPostSchedules(newPostSchedules);
   };
+
+  // Inside the useEffect where you fetch social tokens
   useEffect(() => {
-    const getSocialPlatforms = async () => {
-      const categoryList = await getAllSocialPlatforms();
-      categoryList && setCategories(categoryList);
+    const getSocials = async () => {
+      try {
+        const socialTokenList = await getSocialTokensByUser({
+          userId,
+          page: 1,
+        });
+        if (socialTokenList) {
+          // Transform the data to match the format expected by react-multi-select-component
+          const transformedSocials = socialTokenList.data.map(
+            (socialToken) => ({
+              label: `${socialToken.socialPlatform.name}${
+                socialToken.name ? " | " + socialToken.name : ""
+              }`, // Assuming 'name' is the label in your model
+              value: socialToken._id, // Assuming '_id' is the value in your model
+              disabled: !socialToken.active, // You can set this based on your logic
+              ...socialToken,
+            })
+          );
+          setSocialTokens(transformedSocials);
+        }
+      } catch (error) {
+        console.log("Error fetching social tokens:", error);
+      }
     };
 
-    getCategories();
+    getSocials();
   }, []);
 
   return (
@@ -173,21 +175,31 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
         className="flex flex-col gap-5"
       >
         <div className="flex flex-col gap-2">
-          <Label htmlFor="socials">
-            Choose socials where you want to share your content
+          <Label htmlFor="socialTokens">
+            {!!socialTokens.length ? (
+              "Choose socials where you want to share your content"
+            ) : (
+              <span className="text-red-400">
+                Please connect your socials if you want to post
+              </span>
+            )}
           </Label>
           <div className="gap-3 flex flex-wrap">
             {!!selected.length &&
               selected.map((item) => (
-                <Badge className="w-fit whitespace-nowrap">{item.label}</Badge>
+                <Badge className="w-fit whitespace-nowrap" key={item.label}>
+                  {item.label}
+                </Badge>
               ))}
           </div>
-          <MultiSelect
-            options={socials}
-            value={selected}
-            onChange={setSelected}
-            labelledBy="Select"
-          />
+          {!!socialTokens.length && (
+            <MultiSelect
+              options={socialTokens}
+              value={selected}
+              onChange={setSelected}
+              labelledBy="Select"
+            />
+          )}
         </div>
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
@@ -273,7 +285,6 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
                 <FormLabel>
                   Attachments (First image will be used as the cover)
                 </FormLabel>
-                {console.log("Filed: ", field)}
                 <FormControl>
                   <MultipleFileUploader
                     onFieldChange={field.onChange}
@@ -290,7 +301,7 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
         </div>
         <div className="flex flex-col gap-5 md:flex-row items-center">
           {allPostSchedules.map((schedule, index) => (
-            <p className="text-[0.65rem] text-green-900 flex gap-2">
+            <p className="text-[0.65rem] text-green-900 flex gap-2" key={index}>
               <span className="capitalize font-bold">
                 {schedule.recurrence === "once" || schedule.recurrence === ""
                   ? "once"
@@ -345,31 +356,6 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
                       onCheckedChange={field.onChange}
                       checked={field.value}
                       id="is_published"
-                      className="mr-2 h-5 w-5 border-2 border-primary-500"
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="is_scheduled"
-            render={({ field }) => (
-              <FormItem className="w-1/2 lg:w-1/3">
-                <FormControl>
-                  <div className="flex items-center justify-center">
-                    <label
-                      htmlFor="is_scheduled"
-                      className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Scheduled
-                    </label>
-                    <Checkbox
-                      onCheckedChange={field.onChange}
-                      checked={field.value}
-                      id="is_scheduled"
                       className="mr-2 h-5 w-5 border-2 border-primary-500"
                     />
                   </div>

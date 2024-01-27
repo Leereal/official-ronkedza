@@ -7,9 +7,9 @@ import moment from "moment";
 import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
 import {
-  deleteFacebookAuth,
-  updateFacebookAuth,
-} from "@/lib/actions/facebookToken.actions";
+  deleteSocialAuth,
+  updateSocialAuth,
+} from "@/lib/actions/socialToken.actions";
 import { toast } from "sonner";
 
 const FacebookPageCard = ({ page, userId }) => {
@@ -17,7 +17,7 @@ const FacebookPageCard = ({ page, userId }) => {
   const handleSwitch = async () => {
     //Activate or deactivate facebook page
     try {
-      const updatedPage = await updateFacebookAuth({
+      const updatedPage = await updateSocialAuth({
         userId,
         data: {
           _id: page._id,
@@ -32,13 +32,13 @@ const FacebookPageCard = ({ page, userId }) => {
       }
     } catch (error) {
       toast.error("Failed to update page");
-      console.log("updateFacebookAuth error : ", error);
+      console.log("updateSocialAuth error : ", error);
     }
   };
 
   const handleDelete = async () => {
     try {
-      await deleteFacebookAuth(page._id, "/profile");
+      await deleteSocialAuth(page._id, "/profile");
       toast.success("Page deleted successfully");
     } catch (error) {
       toast.error("Failed to delete page");

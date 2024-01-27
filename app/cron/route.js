@@ -1,4 +1,8 @@
 import { postToSocials } from "@/lib/actions/socialPost.actions";
+import {
+  getSocialTokenById,
+  getSocialTokensByUser,
+} from "@/lib/actions/socialToken.actions";
 import { connectToDatabase } from "@/lib/database";
 import ScheduledPost from "@/lib/database/models/scheduledPost.model";
 import getRecurrenceRule from "@/lib/scheduler-recurrence-rule";
@@ -7,7 +11,6 @@ import { NextResponse } from "next/server";
 import schedule from "node-schedule";
 
 export async function GET(req) {
-  console.log("Log Get");
   try {
     // Connect to the database
     await connectToDatabase();
@@ -15,45 +18,49 @@ export async function GET(req) {
     // Get all scheduled posts that are due
     const now = new Date();
     const dueScheduledPosts = await ScheduledPost.find({
-      scheduled_time: { $lte: now },
+      startDateTime: { $lte: now },
       status: { $in: ["new", "failed", "paused"] },
     })
       .populate({
-        path: "socialPlatforms",
-        model: "SocialPlatform",
-        select: "name slug", // Specify the fields you want to populate
+        path: "socialTokens",
+        model: "SocialToken",
       })
       .populate("post");
-
     // Process and post each due scheduled post
     for (const scheduledPost of dueScheduledPosts) {
       try {
-        // Your logic for posting the scheduled post goes here
-        await postToSocials(scheduledPost.post, scheduledPost.socialPlatforms);
+        // Get the social tokens object first
+        const socialTokens = await Promise.all(
+          scheduledPost.socialTokens.map(async (id) => {
+            const socialToken = await getSocialTokenById(id);
+            return socialToken;
+          })
+        );
 
-        // Update the scheduled post status accordingly, for example, set it to "completed"
-        scheduledPost.status = "completed";
-        await scheduledPost.save();
+        // // Your logic for posting the scheduled post goes here
+        await postToSocials(scheduledPost.post, socialTokens);
 
-        // Handle recurrence
-        if (scheduledPost.recurrence) {
-          const recurrenceRule = getRecurrenceRule(
-            scheduledPost.recurrence,
-            scheduledPost.scheduled_time
-          );
-          schedule.scheduleJob(recurrenceRule, async () => {
-            const newScheduledPost = new ScheduledPost({
-              post: scheduledPost.post,
-              user: scheduledPost.user,
-              scheduled_time: recurrenceRule.nextInvocation(),
-              recurrence: scheduledPost.recurrence,
-              socialPlatforms: scheduledPost.socialPlatforms,
-              timezone: scheduledPost.timezone,
-            });
+        // // Update the scheduled post status accordingly, for example, set it to "completed"
+        if (
+          scheduledPost.recurrence === "once" ||
+          (!scheduledPost.recurrence === "once" &&
+            scheduledPost.endDateTime <= now)
+        ) {
+          scheduledPost.status = "completed";
+          await scheduledPost.save();
+        } else {
+          // Handle recurrence by updating startDateTime
+          if (scheduledPost.recurrence) {
+            const recurrenceRule = getRecurrenceRule(
+              scheduledPost.recurrence,
+              scheduledPost.startDateTime
+            );
 
-            await newScheduledPost.save();
-          });
+            // Update startDateTime for recurrence
+            scheduledPost.startDateTime = recurrenceRule.nextInvocation();
+          }
         }
+        await scheduledPost.save();
       } catch (error) {
         // Handle any errors during the posting process
         console.error(

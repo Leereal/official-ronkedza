@@ -12,13 +12,12 @@ import { useRouter } from "next/navigation";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useEffect } from "react";
 import {
-  autoFacebookAuth,
-  deleteFacebookAuth,
-} from "@/lib/actions/facebookToken.actions";
+  autoSocialAuth,
+  deleteSocialAuth,
+} from "@/lib/actions/socialToken.actions";
 
 const SettingsForm = ({ userId, type, setting, settingId, facebookAppId }) => {
   const [facebookStatus, setFacebookStatus] = useState("");
-  console.log("facebookAppId : ", facebookAppId);
 
   const loginFacebook = () => {
     FB.login(

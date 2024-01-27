@@ -23,9 +23,7 @@ const Profile = async () => {
             {/* <SettingsForm facebookAppId={facebookApp?.appId} /> */}
             <FacebookSettings userId={userId} />
           </TabsContent>
-          <TabsContent value="results">
-            <PostResults />
-          </TabsContent>
+          <TabsContent value="results">{/* <PostResults /> */}</TabsContent>
         </Tabs>
       </div>
     </>

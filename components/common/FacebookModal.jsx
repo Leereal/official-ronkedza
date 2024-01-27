@@ -14,9 +14,9 @@ import { pageDefaultValues } from "@/constants";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  createFacebookAuth,
-  updateFacebookAuth,
-} from "@/lib/actions/facebookToken.actions";
+  createSocialAuth,
+  updateSocialAuth,
+} from "@/lib/actions/socialToken.actions";
 import { toast } from "sonner";
 import {
   Form,
@@ -52,12 +52,12 @@ const FacebookModal = ({ page, type, userId }) => {
       }
 
       try {
-        const updatedFacebookAuth = await updateFacebookAuth({
+        const updatedSocialAuth = await updateSocialAuth({
           data: { ...values, _id: page._id },
           userId,
         });
 
-        if (updatedFacebookAuth) {
+        if (updatedSocialAuth) {
           toast.success("Tokens updated succesfully.");
           form.reset();
           router.push(`/settings`);
@@ -67,9 +67,8 @@ const FacebookModal = ({ page, type, userId }) => {
         console.log(error);
       }
     } else {
-      console.log("User : ", userId);
       try {
-        const newToken = await createFacebookAuth({
+        const newToken = await createSocialAuth({
           data: values,
           userId,
         });

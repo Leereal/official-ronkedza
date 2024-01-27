@@ -17,7 +17,11 @@ const Card = ({ post }) => {
     <div className="group relative flex min-h-[380px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
       <Link
         href={`/posts/${post._id}`}
-        style={{ backgroundImage: `url(${post.featured_image})` }}
+        style={{
+          backgroundImage: `url(${
+            post?.attachments ? post?.attachments[0] : "/images/NOIMAGE.jpg"
+          })`,
+        }}
         className="flex-center flex-grow bg-gray-50 bg-cover bg-center text-grey-500"
       />
       {/* IS EVENT CREATOR ... */}
@@ -40,7 +44,7 @@ const Card = ({ post }) => {
         </div>
 
         <p className="p-medium-16 p-medium-18 text-grey-500">
-          {formatDateTime(post.scheduled_time).dateTime}
+          {formatDateTime(post.createdAt).dateTime}
         </p>
 
         <Link href={`/posts/${post._id}`}>

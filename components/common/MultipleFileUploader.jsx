@@ -69,15 +69,17 @@ export function MultipleFileUploader({
                 layout="fill"
                 className="w-full object-cover object-center rounded-xl"
               />
-              <div
-                title="Remove this image?"
-                className="w-4 h-4 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 mr-2 mt-2 bg-slate-100"
-              >
-                <X
-                  className="w-6 h-6 text-red-500"
-                  onClick={(e) => removeFiles(e, index)}
-                />
-              </div>
+              {!disabled && (
+                <div
+                  title="Remove this image?"
+                  className="w-4 h-4 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 mr-2 mt-2 bg-slate-100"
+                >
+                  <X
+                    className="w-6 h-6 text-red-500"
+                    onClick={(e) => removeFiles(e, index)}
+                  />
+                </div>
+              )}
             </div>
           ))}
         <div className="w-20 h-20 my-2 text-grey-500 flex flex-col items-center border-2 rounded-xl cursor-pointer">

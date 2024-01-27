@@ -1,13 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getFacebookSettingsByUser } from "@/lib/actions/facebookToken.actions";
-import { Switch } from "@/components/ui/switch";
+import { getSocialTokensByUser } from "@/lib/actions/socialToken.actions";
 import FacebookPageCard from "./FacebookPageCard";
-import { FaPlus } from "react-icons/fa6";
 import FacebookModal from "./FacebookModal";
 
 const FacebookSettings = async ({ userId }) => {
-  const settings = await getFacebookSettingsByUser({ userId, page: 1 });
-  const pages = settings.data;
+  const settings = await getSocialTokensByUser({ userId, page: 1 });
+  const pages = settings?.data?.filter(
+    (token) => token.socialPlatform.slug === "facebook-page"
+  );
   return (
     <Card>
       <CardHeader>
