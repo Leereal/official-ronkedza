@@ -31,7 +31,7 @@ export const postDefaultValues = {
 };
 
 export const pageDefaultValues = {
-  pageId: "",
+  socialId: "",
   accessToken: "",
 };
 export const socialPlatformDefaultValues = {

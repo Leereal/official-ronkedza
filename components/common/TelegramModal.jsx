@@ -9,8 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
-import { pageFormSchema } from "@/lib/validator";
-import { pageDefaultValues } from "@/constants";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -28,39 +26,45 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { z } from "zod";
 
-const FacebookModal = ({ page, type, userId }) => {
+const TelegramModal = ({ channel, type, userId }) => {
   const initialValues =
-    page && type === "Update"
+    channel && type === "Update"
       ? {
-          ...page,
+          ...channel,
         }
-      : pageDefaultValues;
+      : { socialId: "" };
 
   const router = useRouter();
 
   const form = useForm({
-    resolver: zodResolver(pageFormSchema),
+    resolver: zodResolver(
+      z.object({
+        socialId: z.string().optional(),
+      })
+    ),
     defaultValues: initialValues,
   });
 
   async function onSubmit(values) {
     if (type === "Update") {
-      if (!page) {
+      if (!channel) {
         router.back();
         return;
       }
 
       try {
         const updatedSocialAuth = await updateSocialAuth({
-          data: { ...values, _id: page._id },
+          data: { ...values, _id: channel._id },
           userId,
+          socialPlatform: "telegram-channel",
         });
 
         if (updatedSocialAuth) {
-          toast.success("Tokens updated succesfully.");
+          toast.success("Channel updated succesfully.");
           form.reset();
-          router.push(`/settings`);
+          router.push(`/profile`);
         }
       } catch (error) {
         toast.error("Error updating token");
@@ -71,15 +75,16 @@ const FacebookModal = ({ page, type, userId }) => {
         const newToken = await createSocialAuth({
           data: values,
           userId,
+          socialPlatform: "telegram-channel",
         });
 
         if (newToken) {
-          toast.success("Tokens added succesfully.");
+          toast.success("Channel added succesfully.");
           form.reset();
-          router.push(`/settings`);
+          router.push(`/profile`);
         }
       } catch (error) {
-        toast.error("Error adding token");
+        toast.error("Error adding channel");
         console.log(error);
       }
     }
@@ -92,9 +97,9 @@ const FacebookModal = ({ page, type, userId }) => {
       </DialogTrigger>
       <DialogContent className="bg-white dark:bg-slate-600">
         <DialogHeader>
-          <DialogTitle>Facebook Token</DialogTitle>
+          <DialogTitle>Telegram Channel ID</DialogTitle>
           <DialogDescription>
-            Please click here on how to get user short lived token
+            Please click here on how to get your channel ID
             {/* TODO add a link to instructions here */}
           </DialogDescription>
         </DialogHeader>
@@ -104,32 +109,17 @@ const FacebookModal = ({ page, type, userId }) => {
             className="flex flex-col gap-5"
           >
             <div className="flex flex-col gap-5 md:flex-row">
-              {/* <FormField
-                control={form.control}
-                name="pageId"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Facebook Page ID</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Facebook Page ID"
-                        {...field}
-                        className="input-field"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
               <FormField
                 control={form.control}
-                name="accessToken"
+                name="socialId"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Facebook AccessToken</FormLabel>
+                    <FormLabel>
+                      Telegram Channel ID (Begins with -100)
+                    </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Facebook User AccessToken"
+                        placeholder="Telegram Channel ID"
                         {...field}
                         className="input-field"
                       />
@@ -139,7 +129,7 @@ const FacebookModal = ({ page, type, userId }) => {
                 )}
               />
             </div>
-            <Button type="submit">Connect All Linked Pages</Button>
+            <Button type="submit">Connect Channel</Button>
           </form>
         </Form>
       </DialogContent>
@@ -147,4 +137,4 @@ const FacebookModal = ({ page, type, userId }) => {
   );
 };
 
-export default FacebookModal;
+export default TelegramModal;

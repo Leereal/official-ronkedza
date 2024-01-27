@@ -294,7 +294,8 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>
-                  Attachments (First image will be used as the cover)
+                  Attachments (First image will be used as the cover | 5 Images
+                  Max)
                 </FormLabel>
                 <FormControl>
                   <MultipleFileUploader

@@ -12,19 +12,18 @@ import {
 } from "@/lib/actions/socialToken.actions";
 import { toast } from "sonner";
 
-const FacebookPageCard = ({ page, userId }) => {
+const TelegramChannelCard = ({ channel, userId }) => {
   const [active, setActive] = useState(false);
   const handleSwitch = async () => {
-    //Activate or deactivate facebook page
     try {
-      const updatedPage = await updateSocialAuth({
+      const updatedChannel = await updateSocialAuth({
         userId,
         data: {
-          _id: page._id,
+          _id: channel._id,
           active: !active,
         },
       });
-      if (updatedPage) {
+      if (updatedChannel) {
         toast.success("Page updated successfully");
         setActive(!active);
       } else {
@@ -38,24 +37,24 @@ const FacebookPageCard = ({ page, userId }) => {
 
   const handleDelete = async () => {
     try {
-      await deleteSocialAuth(page._id, "/profile");
-      toast.success("Page deleted successfully");
+      await deleteSocialAuth(channel._id, "/profile");
+      toast.success("Channel deleted successfully");
     } catch (error) {
-      toast.error("Failed to delete page");
+      toast.error("Failed to delete channel");
       console.log("handleDelete error : ", error);
     }
   };
   useEffect(() => {
-    setActive(page.active);
+    setActive(channel.active);
   }, []);
 
   return (
     <Card className="m-4">
       <CardContent className="space-y-2">
         <div>
-          <h3 className="text-sm font-bold py-2 sm:text-lg">{page.name}</h3>
+          <h3 className="text-sm font-bold py-2 sm:text-lg">{channel.name}</h3>
           <p className="text-[10px] text-gray-600 font-light text-justify sm:text-[12px]">
-            {page.about || "Nothing about page"}
+            {channel.about || "Nothing about channel"}
           </p>
         </div>
         <Card>
@@ -71,28 +70,19 @@ const FacebookPageCard = ({ page, userId }) => {
             </div>
             <div className="sm:flex justify-between">
               <h3 className="mx-auto text-center text-[12px] sm:text-sm sm:mx-0">
-                Page ID
+                Channel ID
               </h3>
               <p className="mx-auto text-center text-sm sm:text-lg sm:mx-0">
-                {page.socialId}
+                {channel.socialId}
               </p>
             </div>
             <div className="sm:flex justify-between">
               <h3 className="mx-auto text-center text-[12px] sm:text-sm sm:mx-0">
-                Followers
+                Members
               </h3>
               <p className="text-center text-sm sm:text-lg sm:mx-0">
-                {page.followers_count}
+                {channel.followers_count}
               </p>
-            </div>
-            <div className="sm:flex justify-between">
-              <h3 className="mx-auto text-center text-[12px] sm:text-sm sm:mx-0">
-                Token Expiration
-              </h3>
-              <p className="text-center text-sm sm:text-lg sm:mx-0">Today</p>
-              {/* <p className="text-center text-sm sm:text-lg"> */}
-              {/* {moment(today).format("MMMM Do YYYY, h:mm:ss a")} */}
-              {/* </p> */}
             </div>
           </CardContent>
         </Card>
@@ -101,4 +91,4 @@ const FacebookPageCard = ({ page, userId }) => {
   );
 };
 
-export default FacebookPageCard;
+export default TelegramChannelCard;
