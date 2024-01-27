@@ -19,7 +19,9 @@ const Card = ({ post }) => {
         href={`/posts/${post._id}`}
         style={{
           backgroundImage: `url(${
-            post?.attachments ? post?.attachments[0] : "/images/NOIMAGE.jpg"
+            post?.attachments && post.length
+              ? post?.attachments[0]
+              : "/images/NOIMAGE.jpg"
           })`,
         }}
         className="flex-center flex-grow bg-gray-50 bg-cover bg-center text-grey-500"
