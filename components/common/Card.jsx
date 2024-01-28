@@ -19,7 +19,7 @@ const Card = ({ post }) => {
         href={`/posts/${post._id}`}
         style={{
           backgroundImage: `url(${
-            post?.attachments && post.length
+            post?.attachments && post.attachments.length
               ? post?.attachments[0]
               : "/images/NOIMAGE.jpg"
           })`,

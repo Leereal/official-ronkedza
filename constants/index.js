@@ -41,6 +41,17 @@ export const socialPlatformDefaultValues = {
   appSecret: "",
   endpoint: "",
 };
+export const tokenDefaultValues = {
+  about: "",
+  accessToken: "",
+  active: true,
+  followers_count: 0,
+  link: "",
+  name: "",
+  socialId: "",
+  chatId: "",
+  socialPlatform: "",
+};
 export const COLORS = {
   primary: "#39B5FF",
   secondary: "#03C167",

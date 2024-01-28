@@ -8,6 +8,7 @@ import {
 import { auth } from "@clerk/nextjs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TelegramSettings from "@/components/common/TelegramSettings";
+import TokenModal from "@/components/common/TokenModal";
 
 const Profile = async () => {
   const { sessionClaims } = auth();
@@ -26,9 +27,14 @@ const Profile = async () => {
       <TopSection title="Profile" />
       <div className="wrapper my-8">
         <Tabs defaultValue="settings" className="">
-          <TabsList className="gap-8">
-            <TabsTrigger value="settings">Social Settings</TabsTrigger>
-            <TabsTrigger value="results">Posts Results</TabsTrigger>
+          <TabsList className="gap-8 flex justify-between">
+            <span>
+              <TabsTrigger value="settings">Social Settings</TabsTrigger>
+              <TabsTrigger value="results">Posts Results</TabsTrigger>
+            </span>
+            <span>
+              <TokenModal userId={userId} />
+            </span>
           </TabsList>
           <TabsContent value="settings">
             {/* <SettingsForm facebookAppId={facebookApp?.appId} /> */}

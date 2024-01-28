@@ -29,7 +29,7 @@ const Dashboard = async (searchParams) => {
 
       <Collection
         data={posts?.data}
-        emptyTitle="No Events Found"
+        emptyTitle="No Posts Found"
         emptyStateSubtext="Come back later"
         collectionType="All_Events"
         limit={6}
