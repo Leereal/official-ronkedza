@@ -311,6 +311,44 @@ const TokenModal = ({ socialToken, type, userId }) => {
                 />
               </div>
             )}
+            {socialPlatform?.slug === "twitter" && (
+              <div className="flex flex-col gap-5 md:flex-row">
+                <FormField
+                  control={form.control}
+                  name="accessToken"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Twitter Access Token</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Twitter Access Token"
+                          {...field}
+                          className="input-field"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="socialId"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Twitter Access Secret</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Twitter Access Secret"
+                          {...field}
+                          className="input-field"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
             {(socialPlatform?.slug !== "whatsapp-group" || !!groups.length) && (
               <Button type="submit">Connect Social</Button>
             )}
