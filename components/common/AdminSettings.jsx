@@ -3,7 +3,7 @@ import SocialPlatformCard from "./SocialPlatformCard";
 
 const AdminSettings = async () => {
   let socialPlatforms = await getAllSocialPlatforms({ query: "", page: 1 });
-  socialPlatforms = socialPlatforms?.data;
+  socialPlatforms = await socialPlatforms?.data;
 
   return (
     <div>

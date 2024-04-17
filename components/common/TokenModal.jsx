@@ -35,6 +35,7 @@ import { Label } from "../ui/label";
 import { cn } from "@/lib/utils";
 import { Spinner } from "./Spinner";
 import { Checkbox } from "@/components/ui/checkbox";
+import PageDropdown from "./PageDropdown";
 
 const TokenModal = ({ socialToken, type, userId }) => {
   const [socialPlatform, setSocialPlatform] = useState({});
@@ -341,6 +342,27 @@ const TokenModal = ({ socialToken, type, userId }) => {
                           placeholder="Twitter Access Secret"
                           {...field}
                           className="input-field"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+            {socialPlatform?.slug === "instagram-business" && (
+              <div className="flex flex-col gap-5 md:flex-row">
+                <FormField
+                  control={form.control}
+                  name="socialId"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Facebook Page To Connect</FormLabel>
+                      <FormControl>
+                        <PageDropdown
+                          onChangeHandler={field.onChange}
+                          value={field.value}
+                          userId={userId}
                         />
                       </FormControl>
                       <FormMessage />
