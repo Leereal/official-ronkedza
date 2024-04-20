@@ -1,7 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { FaCalendarAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import { postFormSchema } from "@/lib/validator";
 import { Button } from "@/components/ui/button";
@@ -377,7 +376,9 @@ const PostForm = ({ userId, type, post, postId, closeModal }) => {
             )}
           />
         </div>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          Submit
+        </Button>
       </form>
     </Form>
   );
